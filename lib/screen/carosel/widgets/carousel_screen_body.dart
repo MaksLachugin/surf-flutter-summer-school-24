@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:surf_flutter_summer_school_24/screen/carosel/widgets/carousel_inherited.dart';
 
 class CarouselScreenBody extends StatefulWidget {
   const CarouselScreenBody({
@@ -25,30 +26,25 @@ class _CarouselScreenBodyState extends State<CarouselScreenBody> {
     _pageController = PageController(viewportFraction: 0.7, initialPage: 0);
   }
 
-  int activePage = 0;
+  int _activePage = 0;
+
+  get activePage => _activePage;
+  void setActivePage(int page) {
+    _activePage = page;
+    CarouselInherited.of(context).setState(CarouselInherited.of(context)
+        .state
+        .value
+        .copyWith(max: images.length, current: activePage + 1));
+  }
+
   @override
   Widget build(BuildContext context) {
+    CarouselInherited.of(context).setState(CarouselInherited.of(context)
+        .state
+        .value
+        .copyWith(max: images.length, current: activePage + 1));
     return Column(
       children: [
-        const SizedBox(
-          height: 10,
-        ),
-        SizedBox(
-          width: 700,
-          height: 100,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                    onPressed: () {}, icon: const Icon(Icons.arrow_back)),
-                const Text("22.07.24"),
-                Text("${activePage + 1}/${images.length}"),
-              ],
-            ),
-          ),
-        ),
         SizedBox(
           height: 500,
           child: Stack(
@@ -59,7 +55,7 @@ class _CarouselScreenBodyState extends State<CarouselScreenBody> {
                   controller: _pageController,
                   onPageChanged: (page) {
                     setState(() {
-                      activePage = page;
+                      setActivePage(page);
                     });
                   },
                   itemBuilder: (context, pagePosition) {
