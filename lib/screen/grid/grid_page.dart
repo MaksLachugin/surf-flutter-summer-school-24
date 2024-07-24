@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:surf_flutter_summer_school_24/feature/theme/di/theme_inherited.dart';
+import 'package:surf_flutter_summer_school_24/feature/theme/domain/theme_controller.dart';
+import 'package:surf_flutter_summer_school_24/screen/grid/widgets/line_button_of_bottom_sheet.dart';
 
 import 'widgets/grid_screen_body.dart';
 
@@ -16,54 +18,7 @@ class GridPage extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return Wrap(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: InkWell(
-                            onTap: () {
-                              ThemeInherited.of(context).switchThemeMode();
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Row(
-                                  children: [
-                                    Icon(Icons.sunny),
-                                    Text('Изменить тему'),
-                                  ],
-                                ),
-                                Text(
-                                    "${ThemeInherited.of(context).themeMode.value.name}")
-                              ],
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: InkWell(
-                            onTap: () {},
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.cloud_upload),
-                                    Text('Загрузить фото...'),
-                                  ],
-                                ),
-                                Text("")
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                );
+                customModalBottomSheet(context);
               },
               icon: const Icon(
                 Icons.more_vert_sharp,
@@ -71,6 +26,45 @@ class GridPage extends StatelessWidget {
         ],
       ),
       body: const GridScreenBody(),
+    );
+  }
+
+  Future<dynamic> customModalBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        var themeController = ThemeInherited.of(context);
+        return Wrap(
+          children: [
+            LineButtonOfBottomSheet(
+              onTap: () {
+                themeController.switchThemeMode();
+              },
+              children: [
+                const Row(
+                  children: [
+                    Icon(Icons.sunny),
+                    Text('Изменить тему'),
+                  ],
+                ),
+                Text(themeController.themeMode.value.getName)
+              ],
+            ),
+            LineButtonOfBottomSheet(
+              onTap: () {},
+              children: const [
+                Row(
+                  children: [
+                    Icon(Icons.cloud_upload),
+                    Text('Загрузить фото...'),
+                  ],
+                ),
+                Text("")
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 }

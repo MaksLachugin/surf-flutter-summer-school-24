@@ -3,10 +3,8 @@ import 'package:surf_flutter_summer_school_24/screen/carosel/carousel_controller
 
 class CarouselInherited extends InheritedWidget {
   const CarouselInherited(
-      {super.key, required this.child, required this.corouselController})
-      : super(child: child);
+      {super.key, required this.corouselController, required super.child});
 
-  final Widget child;
   final CorouselController corouselController;
 
   static CorouselController? maybeOf(BuildContext context) {

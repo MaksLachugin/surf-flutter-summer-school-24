@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:surf_flutter_summer_school_24/screen/carosel/carousel_controller.dart';
 import 'package:surf_flutter_summer_school_24/screen/carosel/carousel_page.dart';
-import 'package:surf_flutter_summer_school_24/screen/carosel/widgets/carousel_inherited.dart';
+import 'package:surf_flutter_summer_school_24/screen/carosel/carousel_state.dart';
 import 'package:surf_flutter_summer_school_24/uikit/widgets/Image_box_view.dart';
-import 'package:surf_flutter_summer_school_24/uikit/widgets/ups_widget.dart';
 
 class GridScreenBody extends StatelessWidget {
   const GridScreenBody({super.key});
@@ -16,38 +15,34 @@ class GridScreenBody extends StatelessWidget {
           padding: const EdgeInsets.all(5),
           child: SizedBox(
             height: 750,
-            child: GridView.count(
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 2,
-              crossAxisCount: 3,
-              shrinkWrap: true,
-              children: List.generate(
-                100,
-                (index) {
-                  return InkWell(
-                    onTap: () {
-                      if (index % 5 == 0) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => UpsWidget(),
-                            ));
-                      }
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CarouselInherited(
-                                  corouselController: CorouselController(),
-                                  child: const CarouselPage(),
-                                )),
-                      );
-                    },
-                    child: ImageBoxView(
-                      index: index,
-                    ),
-                  );
-                },
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 2,
+                crossAxisCount: 3,
               ),
+              itemBuilder: (buildContext, index) {
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          var corouselController = CorouselController();
+                          corouselController.setCarouselState(
+                              CarouselState(max: 4, current: index));
+                          return CarouselPage(
+                            corouselController: corouselController,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  child: ImageBoxView(
+                    index: index,
+                  ),
+                );
+              },
             ),
           ),
         ),

@@ -28,3 +28,16 @@ class ThemeController {
     _themeMode.value = newThemeMode;
   }
 }
+
+extension ThemeModeExtension on ThemeMode {
+  String get getName {
+    switch (this) {
+      case ThemeMode.system:
+        return "Системная";
+      case ThemeMode.light:
+        return "Светлая";
+      case ThemeMode.dark:
+        return "Темная";
+    }
+  }
+}

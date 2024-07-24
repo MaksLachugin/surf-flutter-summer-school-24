@@ -31,18 +31,12 @@ class _CarouselScreenBodyState extends State<CarouselScreenBody> {
   get activePage => _activePage;
   void setActivePage(int page) {
     _activePage = page;
-    CarouselInherited.of(context).setState(CarouselInherited.of(context)
-        .state
-        .value
-        .copyWith(max: images.length, current: activePage + 1));
+    setCarouselState();
   }
 
   @override
   Widget build(BuildContext context) {
-    CarouselInherited.of(context).setState(CarouselInherited.of(context)
-        .state
-        .value
-        .copyWith(max: images.length, current: activePage + 1));
+    setCarouselState();
     return Column(
       children: [
         SizedBox(
@@ -104,36 +98,53 @@ class _CarouselScreenBodyState extends State<CarouselScreenBody> {
     );
   }
 
+  void setCarouselState() {
+    CarouselInherited.of(context).setCarouselState(CarouselInherited.of(context)
+        .carouselState
+        .value
+        .copyWith(max: images.length, current: activePage + 1));
+  }
+
   Row pips() {
     return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: indicators(images.length, activePage, (int index) {
-          setState(() {
-            _pageController.animateToPage(
-              index,
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.ease,
-            );
-          });
-        }));
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: indicators(
+        images.length,
+        activePage,
+        (int index) {
+          setState(
+            () {
+              _pageController.animateToPage(
+                index,
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.ease,
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 }
 
 List<Widget> indicators(
     imagesLength, currentIndex, void Function(int index) setter) {
-  return List<Widget>.generate(imagesLength, (index) {
-    return GestureDetector(
-      onTap: () {
-        setter(index);
-      },
-      child: Container(
-        margin: const EdgeInsets.all(3),
-        width: 10,
-        height: 10,
-        decoration: BoxDecoration(
-            color: currentIndex == index ? Colors.black : Colors.black26,
-            shape: BoxShape.circle),
-      ),
-    );
-  });
+  return List<Widget>.generate(
+    imagesLength,
+    (index) {
+      return GestureDetector(
+        onTap: () {
+          setter(index);
+        },
+        child: Container(
+          margin: const EdgeInsets.all(3),
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(
+              color: currentIndex == index ? Colors.black : Colors.black26,
+              shape: BoxShape.circle),
+        ),
+      );
+    },
+  );
 }
