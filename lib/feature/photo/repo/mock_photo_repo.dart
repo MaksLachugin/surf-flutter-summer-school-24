@@ -1,7 +1,7 @@
 import 'package:surf_flutter_summer_school_24/feature/photo/entity/photo_entity.dart';
-import 'package:surf_flutter_summer_school_24/feature/photo/repo/i_photo_repo.dart';
+import 'package:surf_flutter_summer_school_24/feature/photo/repo/photo_repo.dart';
 
-class MockPhotoRepo implements IPhotoRepo {
+class MockPhotoRepo implements PhotoRepo {
   @override
   Future<List<PhotoEntity>> getListPhoto() {
     return Future.delayed(

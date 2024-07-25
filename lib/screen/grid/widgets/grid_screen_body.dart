@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:surf_flutter_summer_school_24/feature/photo/bloc/photo_bloc.dart';
-import 'package:surf_flutter_summer_school_24/feature/photo/repo/mock_photo_repo.dart';
+import 'package:surf_flutter_summer_school_24/feature/photo/repo/photo_repo.dart';
 import 'package:surf_flutter_summer_school_24/screen/grid/widgets/grid_screen_photo_state_widget.dart';
 import 'package:surf_flutter_summer_school_24/uikit/widgets/ups_widget.dart';
 
@@ -13,7 +14,7 @@ class GridScreenBody extends StatefulWidget {
 }
 
 class _GridScreenBodyState extends State<GridScreenBody> {
-  final PhotoBloc _photoBloc = PhotoBloc(MockPhotoRepo());
+  final PhotoBloc _photoBloc = PhotoBloc(GetIt.I<PhotoRepo>());
 
   @override
   void initState() {

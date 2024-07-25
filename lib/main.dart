@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:surf_flutter_summer_school_24/feature/photo/repo/photo_repo.dart';
+import 'package:surf_flutter_summer_school_24/feature/photo/repo/mock_photo_repo.dart';
 import 'package:surf_flutter_summer_school_24/screen/grid/grid_page.dart';
 import 'package:surf_flutter_summer_school_24/storage/theme/theme_storage.dart';
 import 'package:surf_flutter_summer_school_24/uikit/theme/theme_data.dart';
 import 'feature/theme/theme.dart';
 
+GetIt getIt = GetIt.instance;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
@@ -18,6 +22,7 @@ void main() async {
     themeRepository: themeRepository,
   );
 
+  getIt.registerSingleton<PhotoRepo>(MockPhotoRepo());
   runApp(MainApp(
     themeController: themeController,
   ));
