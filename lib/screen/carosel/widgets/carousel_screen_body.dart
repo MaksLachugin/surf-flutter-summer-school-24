@@ -1,7 +1,10 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:surf_flutter_summer_school_24/screen/carosel/widgets/carousel_inherited.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:surf_flutter_summer_school_24/feature/carousel/cubit/carousel_cubit.dart';
+
+import 'image_blur_container.dart';
+import 'image_container.dart';
 
 class CarouselScreenBody extends StatefulWidget {
   const CarouselScreenBody({
@@ -13,138 +16,103 @@ class CarouselScreenBody extends StatefulWidget {
 }
 
 class _CarouselScreenBodyState extends State<CarouselScreenBody> {
-  List<String> images = [
-    'https://c4.wallpaperflare.com/wallpaper/586/603/742/minimalism-4k-for-mac-desktop-wallpaper-preview.jpg',
-    'https://c4.wallpaperflare.com/wallpaper/448/174/357/neon-4k-hd-best-for-desktop-wallpaper-preview.jpg',
-    '',
-    ""
-  ];
   late PageController _pageController;
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(viewportFraction: 0.7, initialPage: 0);
   }
 
-  int _activePage = 0;
-
-  get activePage => _activePage;
-  void setActivePage(int page) {
-    _activePage = page;
-    setCarouselState();
+  @override
+  void didChangeDependencies() {
+    _pageController = PageController(
+        viewportFraction: 0.8,
+        initialPage: BlocProvider.of<CarouselCubit>(context).state.current);
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    setCarouselState();
-    return Column(
-      children: [
-        SizedBox(
-          height: 500,
-          child: Stack(
-            children: [
-              PageView.builder(
-                  itemCount: images.length,
-                  pageSnapping: true,
-                  controller: _pageController,
-                  onPageChanged: (page) {
-                    setState(() {
-                      setActivePage(page);
-                    });
-                  },
-                  itemBuilder: (context, pagePosition) {
-                    return Container(
-                      margin: const EdgeInsets.all(10),
-                      child: Transform.scale(
-                        scale: (pagePosition == activePage) ? 1 : 0.9,
-                        child: Image.asset(
-                          'assets/images/$pagePosition.jpg',
-                        ),
-                      ),
-                    );
-                  }),
-              Positioned(
-                width: 50,
-                height: 500,
-                top: 0,
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(
-                        sigmaX: 2, // mess with this to update blur
-                        sigmaY: 2),
-                    child: Container(),
-                  ),
-                ),
+    return BlocBuilder<CarouselCubit, CarouselState>(
+      builder: (context, state) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              height: 700,
+              child: PageView.builder(
+                itemCount: state.photos.length,
+                pageSnapping: true,
+                controller: _pageController,
+                onPageChanged: setActivePage,
+                itemBuilder: (context, pagePosition) {
+                  var photoUrl = state.photos[pagePosition].url;
+                  if (pagePosition == state.current) {
+                    return ImageContainer(url: photoUrl);
+                  } else {
+                    return ImageBlurContainer(url: photoUrl);
+                  }
+                },
               ),
-              Positioned(
-                width: 50,
-                height: 500,
-                top: 0,
-                right: 0,
-                child: ClipRRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(
-                        sigmaX: 2, // mess with this to update blur
-                        sigmaY: 2),
-                    child: Container(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        pips(),
-      ],
+            ),
+            IndicatorsWidget(setter: setter),
+          ],
+        );
+      },
     );
   }
 
-  void setCarouselState() {
-    CarouselInherited.of(context).setCarouselState(CarouselInherited.of(context)
-        .carouselState
-        .value
-        .copyWith(max: images.length, current: activePage + 1));
+  void setter(int index) {
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.ease,
+    );
   }
 
-  Row pips() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: indicators(
-        images.length,
-        activePage,
-        (int index) {
-          setState(
-            () {
-              _pageController.animateToPage(
-                index,
-                duration: const Duration(milliseconds: 250),
-                curve: Curves.ease,
-              );
-            },
-          );
-        },
-      ),
-    );
+  void setActivePage(int value) {
+    BlocProvider.of<CarouselCubit>(context).swipe(value);
   }
 }
 
-List<Widget> indicators(
-    imagesLength, currentIndex, void Function(int index) setter) {
-  return List<Widget>.generate(
-    imagesLength,
-    (index) {
-      return GestureDetector(
-        onTap: () {
-          setter(index);
-        },
-        child: Container(
-          margin: const EdgeInsets.all(3),
-          width: 10,
-          height: 10,
-          decoration: BoxDecoration(
-              color: currentIndex == index ? Colors.black : Colors.black26,
-              shape: BoxShape.circle),
-        ),
-      );
-    },
-  );
+class IndicatorsWidget extends StatelessWidget {
+  const IndicatorsWidget({
+    super.key,
+    required this.setter,
+  });
+
+  final void Function(int index) setter;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CarouselCubit, CarouselState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List<Widget>.generate(
+              state.max,
+              (index) {
+                return GestureDetector(
+                  onTap: () {
+                    setter(index);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.all(3),
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(
+                        color: state.current == index
+                            ? Colors.black
+                            : Colors.black26,
+                        shape: BoxShape.circle),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

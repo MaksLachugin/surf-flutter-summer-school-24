@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:surf_flutter_summer_school_24/screen/carosel/carousel_controller.dart';
-import 'package:surf_flutter_summer_school_24/screen/carosel/carousel_page.dart';
-import 'package:surf_flutter_summer_school_24/screen/carosel/carousel_state.dart';
-import 'package:surf_flutter_summer_school_24/uikit/widgets/Image_box_view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:surf_flutter_summer_school_24/feature/photo/bloc/photo_bloc.dart';
+import 'package:surf_flutter_summer_school_24/feature/photo/repo/mock_photo_repo.dart';
+import 'package:surf_flutter_summer_school_24/screen/grid/widgets/grid_screen_photo_state_widget.dart';
+import 'package:surf_flutter_summer_school_24/uikit/widgets/ups_widget.dart';
 
-class GridScreenBody extends StatelessWidget {
+class GridScreenBody extends StatefulWidget {
   const GridScreenBody({super.key});
+
+  @override
+  State<GridScreenBody> createState() => _GridScreenBodyState();
+}
+
+class _GridScreenBodyState extends State<GridScreenBody> {
+  final PhotoBloc _photoBloc = PhotoBloc(MockPhotoRepo());
+
+  @override
+  void initState() {
+    _photoBloc.add(LoadPhoto());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,33 +29,25 @@ class GridScreenBody extends StatelessWidget {
           padding: const EdgeInsets.all(5),
           child: SizedBox(
             height: 750,
-            child: GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                mainAxisSpacing: 5,
-                crossAxisSpacing: 2,
-                crossAxisCount: 3,
-              ),
-              itemBuilder: (buildContext, index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) {
-                          var corouselController = CorouselController();
-                          corouselController.setCarouselState(
-                              CarouselState(max: 4, current: index));
-                          return CarouselPage(
-                            corouselController: corouselController,
-                          );
-                        },
+            child: BlocBuilder<PhotoBloc, PhotoState>(
+              bloc: _photoBloc,
+              builder: (context, state) {
+                switch (state) {
+                  case PhotoLoading():
+                    return const Center(
+                      child: SizedBox(
+                        height: 50.0,
+                        width: 50.0,
+                        child: CircularProgressIndicator(),
                       ),
                     );
-                  },
-                  child: ImageBoxView(
-                    index: index,
-                  ),
-                );
+                  case PhotoError():
+                    return const UpsWidget();
+                  case PhotoSuccess():
+                    return GridImageSuccessWidget(
+                      photos: state.photos,
+                    );
+                }
               },
             ),
           ),

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:surf_flutter_summer_school_24/feature/theme/di/theme_inherited.dart';
-import 'package:surf_flutter_summer_school_24/feature/theme/domain/theme_controller.dart';
+import 'package:surf_flutter_summer_school_24/feature/theme/theme.dart';
 import 'package:surf_flutter_summer_school_24/screen/grid/widgets/line_button_of_bottom_sheet.dart';
-
 import 'widgets/grid_screen_body.dart';
 
 class GridPage extends StatelessWidget {
