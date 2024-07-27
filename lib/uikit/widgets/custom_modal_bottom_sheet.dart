@@ -22,7 +22,9 @@ Future<dynamic> customModalBottomSheet(BuildContext context) {
               onTap: () {
                 themeController.switchThemeMode();
               },
-              onTapUp: (_) {},
+              onTapUp: (_) {
+                Navigator.pop(context);
+              },
               children: [
                 Row(
                   children: [
@@ -56,7 +58,35 @@ Future<dynamic> customModalBottomSheet(BuildContext context) {
                       Icons.cloud_upload,
                     ),
                     Text(
-                      'Загрузить фото...',
+                      'Загрузить фото из галереи',
+                      style: style,
+                    ),
+                  ],
+                ),
+                Text(
+                  "",
+                  style: style,
+                )
+              ],
+            ),
+            LineButtonOfBottomSheet(
+              onTap: () async {
+                var r = await picker.pickImage(source: ImageSource.camera);
+                if (r != null) {
+                  photoBloc.add(UploadPhoto(files: [r]));
+                }
+              },
+              onTapUp: (_) {
+                Navigator.pop(context);
+              },
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.cloud_upload,
+                    ),
+                    Text(
+                      'Сделать фото',
                       style: style,
                     ),
                   ],
