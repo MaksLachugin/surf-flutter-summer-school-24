@@ -31,16 +31,16 @@ DI (GetIt) используется гениально в функции main.
 В веб версии PageView не листается, перемещение осуществляется через "точки".
 
 Главный экран
-![Главный экран](docs\1000172335.png)
+![Главный экран](https://github.com/MaksLachugin/surf-flutter-summer-school-24/blob/main/docs/1000172335.png)
 
 Меню удаления
-![Меню удаления](docs\1000172336.png)
+![Меню удаления](https://github.com/MaksLachugin/surf-flutter-summer-school-24/blob/main/docs/1000172336.png)
 
 Меню загрузки фото и смены темы
-![Меню загрузки фото и смены темы](docs\1000172338.png)
+![Меню загрузки фото и смены темы](https://github.com/MaksLachugin/surf-flutter-summer-school-24/blob/main/docs/1000172338.png)
 
 Смена темы
-![Смена темы](docs\1000172339.png)
+![Смена темы](https://github.com/MaksLachugin/surf-flutter-summer-school-24/blob/main/docs/1000172339.png)
 
 Меню детального просмотра
-![Меню детального просмотра](docs\1000172340.png)
+![Меню детального просмотра](https://github.com/MaksLachugin/surf-flutter-summer-school-24/blob/main/docs/1000172340.png)
