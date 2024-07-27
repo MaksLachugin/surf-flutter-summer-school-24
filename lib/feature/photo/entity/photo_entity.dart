@@ -1,26 +1,34 @@
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
-class PhotoEntity {
+class PhotoEntity extends Equatable {
   final String id;
   final String url;
   final DateTime? createdAt;
-  PhotoEntity({
+  final String? smallImageUrl;
+  const PhotoEntity({
     required this.id,
     required this.url,
     this.createdAt,
+    this.smallImageUrl,
   });
+
+  String get smallerImage => (smallImageUrl != null) ? smallImageUrl! : url;
 
   PhotoEntity copyWith({
     String? id,
     String? url,
     ValueGetter<DateTime?>? createdAt,
+    ValueGetter<String?>? smallImageUrl,
   }) {
     return PhotoEntity(
       id: id ?? this.id,
       url: url ?? this.url,
       createdAt: createdAt != null ? createdAt() : this.createdAt,
+      smallImageUrl:
+          smallImageUrl != null ? smallImageUrl() : this.smallImageUrl,
     );
   }
 
@@ -29,6 +37,7 @@ class PhotoEntity {
       'id': id,
       'url': url,
       'createdAt': createdAt?.millisecondsSinceEpoch,
+      'smallImageUrl': smallImageUrl,
     };
   }
 
@@ -39,6 +48,7 @@ class PhotoEntity {
       createdAt: map['createdAt'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'])
           : null,
+      smallImageUrl: map['smallImageUrl'],
     );
   }
 
@@ -48,18 +58,10 @@ class PhotoEntity {
       PhotoEntity.fromMap(json.decode(source));
 
   @override
-  String toString() => 'PhotoEntity(id: $id, url: $url, createdAt: $createdAt)';
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is PhotoEntity &&
-        other.id == id &&
-        other.url == url &&
-        other.createdAt == createdAt;
+  String toString() {
+    return 'PhotoEntity(id: $id, url: $url, createdAt: $createdAt, smallImageUrl: $smallImageUrl)';
   }
 
   @override
-  int get hashCode => id.hashCode ^ url.hashCode ^ createdAt.hashCode;
+  List<Object?> get props => [id];
 }

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ImageBoxViewNetworkWidget extends StatelessWidget {
@@ -10,53 +11,43 @@ class ImageBoxViewNetworkWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.network(
-      fit: BoxFit.cover,
-      url,
-      loadingBuilder: (buildContext, widget, imageChunkEvent) {
-        if (imageChunkEvent == null) return widget;
-        return Center(
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [
-                    Color.fromARGB(255, 74, 67, 82),
-                    Color.fromARGB(255, 26, 99, 117),
-                  ],
-                  begin: FractionalOffset(0.0, 0.0),
-                  end: FractionalOffset(1.0, 0.0),
-                  stops: [0.0, 1.0],
-                  tileMode: TileMode.clamp),
-            ),
-            height: 100.0,
-            width: 100.0,
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: CircularProgressIndicator(
-                value: imageChunkEvent.expectedTotalBytes != null
-                    ? imageChunkEvent.cumulativeBytesLoaded /
-                        imageChunkEvent.expectedTotalBytes!
-                    : null,
-              ),
-            ),
-          ),
-        );
-      },
-      errorBuilder: (buildContext, object, stackTrace) {
+    return CachedImage(
+      url: url,
+      boxFit: BoxFit.cover,
+    );
+  }
+}
+
+class CachedImage extends StatelessWidget {
+  final String url;
+
+  final BoxFit? boxFit;
+
+  const CachedImage({
+    super.key,
+    required this.url,
+    this.boxFit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CachedNetworkImage(
+      imageUrl: url,
+      fit: boxFit,
+      progressIndicatorBuilder: (context, url, downloadProgress) {
         return Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                colors: [
-                  Color(0xFF3366FF),
-                  Color(0xFF00CCFF),
-                ],
-                begin: FractionalOffset(0.0, 0.0),
-                end: FractionalOffset(1.0, 0.0),
-                stops: [0.0, 1.0],
-                tileMode: TileMode.clamp),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: const LinearGradient(
+              colors: [Colors.grey, Colors.blueGrey],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              tileMode: TileMode.repeated,
+            ),
           ),
         );
       },
+      errorWidget: (context, url, error) => const Icon(Icons.error),
     );
   }
 }

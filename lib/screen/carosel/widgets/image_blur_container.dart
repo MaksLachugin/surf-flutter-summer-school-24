@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:surf_flutter_summer_school_24/uikit/widgets/image_box_view.dart';
 
 class ImageBlurContainer extends StatelessWidget {
   final String url;
@@ -15,7 +16,9 @@ class ImageBlurContainer extends StatelessWidget {
       margin: const EdgeInsets.all(20),
       child: ImageFiltered(
         imageFilter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
-        child: Image.network(url),
+        child: CachedImage(
+          url: url,
+        ),
       ),
     );
   }

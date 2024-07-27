@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:surf_flutter_summer_school_24/feature/photo/bloc/photo_bloc.dart';
-import 'package:surf_flutter_summer_school_24/feature/photo/repo/photo_repo.dart';
 import 'package:surf_flutter_summer_school_24/screen/grid/widgets/grid_screen_photo_state_widget.dart';
 import 'package:surf_flutter_summer_school_24/uikit/widgets/ups_widget.dart';
 
@@ -14,12 +12,10 @@ class GridScreenBody extends StatefulWidget {
 }
 
 class _GridScreenBodyState extends State<GridScreenBody> {
-  final PhotoBloc _photoBloc = PhotoBloc(GetIt.I<PhotoRepo>());
-
   @override
   void initState() {
-    _photoBloc.add(LoadPhoto());
     super.initState();
+    _pullRefresh();
   }
 
   @override
@@ -29,9 +25,8 @@ class _GridScreenBodyState extends State<GridScreenBody> {
         Padding(
           padding: const EdgeInsets.all(5),
           child: SizedBox(
-            height: 750,
+            height: MediaQuery.of(context).size.height * 0.85,
             child: BlocBuilder<PhotoBloc, PhotoState>(
-              bloc: _photoBloc,
               builder: (context, state) {
                 switch (state) {
                   case PhotoLoading():
@@ -45,8 +40,15 @@ class _GridScreenBodyState extends State<GridScreenBody> {
                   case PhotoError():
                     return const UpsWidget();
                   case PhotoSuccess():
-                    return GridImageSuccessWidget(
-                      photos: state.photos,
+                    return RefreshIndicator(
+                      onRefresh: _pullRefresh,
+                      child: GridImageSuccessWidget(
+                        state: state,
+                      ),
+                    );
+                  case PhotoSelector():
+                    return GridImageSelectorWidget(
+                      state: state,
                     );
                 }
               },
@@ -55,5 +57,9 @@ class _GridScreenBodyState extends State<GridScreenBody> {
         ),
       ],
     );
+  }
+
+  Future<void> _pullRefresh() async {
+    BlocProvider.of<PhotoBloc>(context).add(LoadPhoto());
   }
 }

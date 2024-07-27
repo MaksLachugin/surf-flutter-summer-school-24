@@ -5,10 +5,13 @@ class LineButtonOfBottomSheet extends StatelessWidget {
 
   final List<Widget> children;
 
+  final void Function(TapUpDetails) onTapUp;
+
   const LineButtonOfBottomSheet({
     super.key,
     required this.onTap,
     required this.children,
+    required this.onTapUp,
   });
 
   @override
@@ -17,6 +20,7 @@ class LineButtonOfBottomSheet extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: InkWell(
         onTap: onTap,
+        onTapUp: onTapUp,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: children,

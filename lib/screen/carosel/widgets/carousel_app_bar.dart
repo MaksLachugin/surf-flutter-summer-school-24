@@ -17,7 +17,7 @@ class CarouselAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Navigator.pop(context);
               },
               icon: const Icon(Icons.arrow_back)),
-          title: Text("${state.getCurrentPhoto().createdAt?.toString()} "),
+          title: Text("${state.getCurrentPhoto().createdAt?.toLocal()} "),
           centerTitle: true,
           actions: [
             Padding(
